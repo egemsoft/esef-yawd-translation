@@ -31,9 +31,9 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.1.0rc1',
+    version='0.1.0',
 
-    description='EsefPy Web Nav',
+    description='Translation',
     long_description=long_description,
 
     # The project's main homepage.
@@ -68,7 +68,7 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords='Esefpy Web resuable apps',
+    keywords='Esefpy Translation Manager',
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().

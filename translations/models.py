@@ -1,16 +1,14 @@
 import os
 
 from django.conf import settings
-
 from django.core.urlresolvers import clear_url_caches
-
 from django.db import models
 from django.db.models.signals import pre_delete, post_delete
 from django.utils.encoding import smart_str
 from django.utils.translation import get_language, get_language_info, ugettext_lazy, ugettext as _
 
-from managers import TranslatableManager
-import utils
+from . import utils
+from .managers import TranslatableManager
 
 USE_ELFINDER = False
 try:
@@ -27,6 +25,7 @@ else:
     def _upload_to(instance, filename):
         ext = os.path.splitext(filename)[-1]
         return os.path.join('languages', '%s%s' % (instance.name, ext))
+
 
     make_imagefield = lambda: models.ImageField(upload_to=_upload_to, verbose_name=ugettext_lazy('Image'), blank=True,
                                                 null=True)
@@ -74,24 +73,24 @@ class Language(models.Model):
         """
         try:
             # not using get_default_language() here, as this method might return
-            #the settings.LANGUAGE_CODE setting if no db languages exist
+            # the settings.LANGUAGE_CODE setting if no db languages exist
             default = Language.objects.get(default=True)
-            #check if the default language just changed
+            # check if the default language just changed
             if self.default and self != default:
-                #make sure only one default language exists
+                # make sure only one default language exists
                 default.default = False
                 default.save()
                 self._default_changed()
 
         except Language.DoesNotExist:
             # no default language was found
-            #force this as the default
+            # force this as the default
             self.default = True
             self._default_changed()
 
         super(Language, self).save(*args, **kwargs)
         # this might produce a little overhead, but it's necessary:
-        #the state of _supported could be unpredictable by now
+        # the state of _supported could be unpredictable by now
         utils._supported = [smart_str(l) for l in Language.objects.values_list('name', flat=True)]
 
     def delete(self):
